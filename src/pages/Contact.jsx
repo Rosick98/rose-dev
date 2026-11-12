@@ -103,26 +103,34 @@ function Contact() {
   <h2>Send a Message</h2>
 
   <form
-    onSubmit={(event) => {
-      event.preventDefault();
+  onSubmit={async (event) => {
+    event.preventDefault();
 
-      const form = event.currentTarget;
-      const data = new FormData(form);
+    const form = event.currentTarget;
+    const data = new FormData(form);
 
-      const subject = encodeURIComponent(
-        data.get("subject")
+    try {
+      const response = await fetch(
+        "https://formspree.io/f/mbgolalv",
+        {
+          method: "POST",
+          body: data,
+          headers: {
+            Accept: "application/json",
+          },
+        }
       );
 
-      const body = encodeURIComponent(
-        `Name: ${data.get("name")}
-Email: ${data.get("email")}
-
-${data.get("message")}`
-      );
-
-      window.location.href =
-        `mailto:elenamilagrosa@me.com?subject=${subject}&body=${body}`;
-    }}
+      if (response.ok) {
+        alert("Your message was sent successfully!");
+        form.reset();
+      } else {
+        alert("Message could not be sent. Please try again.");
+      }
+    } catch (error) {
+      alert("Something went wrong. Please try again.");
+    }
+  }}
   >
     <div className="contact-form-row">
       <input
